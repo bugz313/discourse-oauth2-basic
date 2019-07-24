@@ -224,4 +224,12 @@ register_css <<CSS
 
 CSS
 
+register_js <<JS
+
+window.addEventListener('load', (event) => {
+  console.log('page is fully loaded');
+});
+
+JS
+
 load File.expand_path("../lib/validators/oauth2_basic/oauth2_fetch_user_details_validator.rb", __FILE__)
