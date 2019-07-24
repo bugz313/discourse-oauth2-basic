@@ -16,6 +16,7 @@ login:
   oauth2_callback_user_info_paths:
     type: list
     default: 'id'
+  oauth2_api_key: ''
   oauth2_fetch_user_details:
     default: true
     validator: "Oauth2FetchUserDetailsValidator"
@@ -32,6 +33,7 @@ login:
   oauth2_json_email_path: ''
   oauth2_json_email_verified_path: ''
   oauth2_json_avatar_path: ''
+  oauth2_json_forum_group_path: ''
   oauth2_email_verified: false
   oauth2_overrides_email: false
   oauth2_send_auth_header: true

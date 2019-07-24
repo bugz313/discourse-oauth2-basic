@@ -129,6 +129,7 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
         json_walk(result, user_json, :email)
         json_walk(result, user_json, :email_verified)
         json_walk(result, user_json, :avatar)
+        json_walk(result, user_json, :forum_group)
       end
       result
     else
@@ -165,14 +166,21 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
     avatar_url = user_details[:avatar]
 
     current_info = ::PluginStore.get("oauth2_basic", "oauth2_basic_user_#{user_details[:user_id]}")
+    User.creat
     if current_info
       result.user = User.where(id: current_info[:user_id]).first
       result.user&.update!(email: result.email) if SiteSetting.oauth2_overrides_email && result.email
     elsif result.email_valid
-      result.user = User.find_by_email(result.email)
-      if result.user && user_details[:user_id]
-        ::PluginStore.set("oauth2_basic", "oauth2_basic_user_#{user_details[:user_id]}", user_id: result.user.id)
-      end
+      #result.user = User.find_by_email(result.email)
+      #if result.user && user_details[:user_id]
+      #  ::PluginStore.set("oauth2_basic", "oauth2_basic_user_#{user_details[:user_id]}", user_id: result.user.id)
+      #end
+      if user_details[:forum_group] == "forum-admin"
+        result[:admin] = true;
+      if user_details[:forum_group] == "forum-moderator"
+        result[:moderator] = true;
+        
+      result.user = User.create(result)
     end
 
     download_avatar(result.user, avatar_url)
@@ -211,5 +219,8 @@ register_css <<CSS
   }
 
 CSS
+
+if SiteSetting.oauth2_authorize_url && SiteSetting.oauth2_enabled
+  redirect_to SiteSetting.oauth2_authorize_url + "?client_id=" + SiteSetting.oauth2_client_id + "&redirect_uri=" + callback_url + "&response_type=code&state=" + Discourse.Session.currentProp("csrfToken")
 
 load File.expand_path("../lib/validators/oauth2_basic/oauth2_fetch_user_details_validator.rb", __FILE__)
