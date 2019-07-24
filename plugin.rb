@@ -224,11 +224,11 @@ register_css <<CSS
 
 CSS
 
-register_js <<JS
+register_javascript <<JS
 
-window.addEventListener('load', (event) => {
-  console.log('page is fully loaded');
-});
+  window.addEventListener('load', function(event) {
+    console.log('page is fully loaded');
+  });
 
 JS
 
