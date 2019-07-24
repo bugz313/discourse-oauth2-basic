@@ -166,7 +166,7 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
     avatar_url = user_details[:avatar]
 
     current_info = ::PluginStore.get("oauth2_basic", "oauth2_basic_user_#{user_details[:user_id]}")
-    User.creat
+    
     if current_info
       result.user = User.where(id: current_info[:user_id]).first
       result.user&.update!(email: result.email) if SiteSetting.oauth2_overrides_email && result.email
@@ -178,7 +178,9 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
         result[:moderator] = true;
       end
       result.user = User.create(result)
-    elsif result.email_valid
+    end
+
+    if result.email_valid
       result.user = User.find_by_email(result.email)
       if result.user && user_details[:user_id]
         ::PluginStore.set("oauth2_basic", "oauth2_basic_user_#{user_details[:user_id]}", user_id: result.user.id)
