@@ -170,7 +170,7 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
     if current_info
       result.user = User.where(id: current_info[:user_id]).first
       result.user&.update!(email: result.email) if SiteSetting.oauth2_overrides_email && result.email
-    elseif !current_info
+    elsif !current_info
       if user_details[:forum_group] == "forum-admin"
         result[:admin] = true;
       end
