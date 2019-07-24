@@ -227,7 +227,13 @@ CSS
 register_javascript <<JS
 
   window.addEventListener('load', function(event) {
-    console.log('page is fully loaded');
+    if (!Discourse.User.current()) {
+      $(".login-button").click(); 
+      setTimeout(function(){
+        $(".btn-social.oauth2_basic").click();
+      }, 0)
+    }
+    
   });
 
 JS
