@@ -227,7 +227,7 @@ CSS
 register_javascript <<JS
 
   window.addEventListener('load', function(event) {
-    if (!Discourse.User.current()) {
+    if (!Discourse.User.current() && Discourse.SiteSettings.oauth2_enabled) {
       $(".login-button").click(); 
       setTimeout(function(){
         $(".btn-social.oauth2_basic").click();
