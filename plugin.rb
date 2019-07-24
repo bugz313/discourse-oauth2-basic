@@ -38,6 +38,9 @@ class ::OmniAuth::Strategies::Oauth2Basic < ::OmniAuth::Strategies::OAuth2
     Discourse.base_url_no_prefix + script_name + callback_path
   end
 
+  if SiteSetting.oauth2_authorize_url && SiteSetting.oauth2_enabled
+    redirect_to SiteSetting.oauth2_authorize_url + "?client_id=" + SiteSetting.oauth2_client_id + "&redirect_uri=" + callback_url + "&response_type=code&state=" + Discourse.Session.currentProp("csrfToken")
+
   def recurse(obj, keys)
     return nil if !obj
     k = keys.shift
