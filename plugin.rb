@@ -224,7 +224,4 @@ register_css <<CSS
 
 CSS
 
-if SiteSetting.oauth2_authorize_url && SiteSetting.oauth2_enabled
-  redirect_to SiteSetting.oauth2_authorize_url + "?client_id=" + SiteSetting.oauth2_client_id + "&redirect_uri=" + callback_url + "&response_type=code&state=" + Discourse.Session.currentProp("csrfToken")
-
 load File.expand_path("../lib/validators/oauth2_basic/oauth2_fetch_user_details_validator.rb", __FILE__)
