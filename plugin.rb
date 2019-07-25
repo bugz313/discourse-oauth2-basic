@@ -171,21 +171,30 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
       result.user = User.where(id: current_info[:user_id]).first
       result.user&.update!(email: result.email) if SiteSetting.oauth2_overrides_email && result.email
     elsif !current_info
+      log(">>>>>>>>> current_info null, creating user")
       admin = false
       moderator = false
       if auth['info']['forum_group'] == "forum-admin"
+        log(">>>>>>>>> user admin")
         admin = true;
       end
       if auth['info']['forum_group'] == "forum-moderator"
+        log(">>>>>>>>> user moderator")
         moderator = true;
       end
+      log(">>>>>>>>> creating user")
       result.user = User.create(name: auth['info']['name'], email: auth['info']['email'], username: auth['info']['username'], admin: admin, moderator: moderator)
+      log(">>>>>>>>> user created #{result.user.id}")
     end
 
+    log(">>>>>>>>> checking email valid")
     if result.email_valid
+      log(">>>>>>>>> email valid. setting oauth user")
       result.user = User.find_by_email(result.email)
       if result.user && user_details[:user_id]
+        log(">>>>>>>>> start setting user oauth")
         ::PluginStore.set("oauth2_basic", "oauth2_basic_user_#{user_details[:user_id]}", user_id: result.user.id)
+        log(">>>>>>>>> done setting user oauth")
       end
     end
 
