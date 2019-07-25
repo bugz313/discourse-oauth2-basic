@@ -179,7 +179,7 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
       if auth['info']['forum_group'] == "forum-moderator"
         moderator = true;
       end
-      result.user = User.create(name: auth['info']['name'], email: auth['info']['email'], username: auth['info']['username'], user_id: auth['uid'], admin: admin, moderator: moderator)
+      result.user = User.create(name: auth['info']['name'], email: auth['info']['email'], username: auth['info']['username'], admin: admin, moderator: moderator)
     end
 
     if result.email_valid
