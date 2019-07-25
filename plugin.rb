@@ -131,6 +131,7 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
         json_walk(result, user_json, :avatar)
         json_walk(result, user_json, :forum_group)
       end
+      log(">>>>>>>>>>>> result from json walk: #{result}")
       result
     else
       nil
@@ -171,19 +172,19 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
       result.user = User.where(id: current_info[:user_id]).first
       result.user&.update!(email: result.email) if SiteSetting.oauth2_overrides_email && result.email
     elsif !current_info
-      log(">>>>>>>>> current_info null, creating user")
+      log(">>>>>>>>> current_info null, creating user #{user_details}")
       admin = false
       moderator = false
-      if auth['info']['forum_group'] == "forum-admin"
+      if user_details['forum_group'] == "forum-admin"
         log(">>>>>>>>> user admin")
         admin = true;
       end
-      if auth['info']['forum_group'] == "forum-moderator"
+      if user_details['forum_group'] == "forum-moderator"
         log(">>>>>>>>> user moderator")
         moderator = true;
       end
-      log(">>>>>>>>> creating user #{auth['info']['name']}, #{auth['info']['email']}, #{auth['info']['username']}, #{admin}, #{moderator}")
-      result.user = User.create(name: auth['info']['name'], email: auth['info']['email'], username: auth['info']['username'], admin: admin, moderator: moderator)
+      log(">>>>>>>>> creating user #{result.name}, #{result.email}, #{result.username}, #{admin}, #{moderator}")
+      result.user = User.create(name: result.name, email: result.email, username: result.username, admin: admin, moderator: moderator)
       log(">>>>>>>>> user created #{result.user.id}")
     end
 
