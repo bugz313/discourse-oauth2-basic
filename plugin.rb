@@ -175,16 +175,16 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
       log(">>>>>>>>> current_info null, creating user #{user_details}")
       admin = false
       moderator = false
-      if user_details['forum_group'] == "forum-admin"
+      if user_details[:forum_group] == "forum-admin"
         log(">>>>>>>>> user admin")
         admin = true;
       end
-      if user_details['forum_group'] == "forum-moderator"
+      if user_details[:forum_group] == "forum-moderator"
         log(">>>>>>>>> user moderator")
         moderator = true;
       end
       log(">>>>>>>>> creating user #{result.name}, #{result.email}, #{result.username}, #{admin}, #{moderator}")
-      result.user = User.create(name: result.name, email: result.email, username: result.username, admin: admin, moderator: moderator)
+      result.user = User.create!(name: result.name, email: result.email, username: result.username, admin: admin, moderator: moderator)
       log(">>>>>>>>> user created #{result.user.id}")
     end
 
