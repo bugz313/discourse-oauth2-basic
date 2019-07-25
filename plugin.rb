@@ -171,13 +171,15 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
       result.user = User.where(id: current_info[:user_id]).first
       result.user&.update!(email: result.email) if SiteSetting.oauth2_overrides_email && result.email
     elsif !current_info
+      admin = false
+      moderator = false
       if auth['info']['forum_group'] == "forum-admin"
-        result["admin"] = true;
+        admin = true;
       end
       if auth['info']['forum_group'] == "forum-moderator"
-        result["moderator"] = true;
+        moderator = true;
       end
-      result.user = User.create(result)
+      result.user = User.create(name: auth['info']['name'], email: auth['info']['email'], username: auth['info']['username'], user_id: auth['uid'], admin: admin, moderator: moderator)
     end
 
     if result.email_valid
