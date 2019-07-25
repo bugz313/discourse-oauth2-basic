@@ -184,7 +184,8 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
         moderator = true;
       end
       log(">>>>>>>>> creating user #{result.name}, #{result.email}, #{result.username}, #{admin}, #{moderator}")
-      result.user = User.create!(name: result.name, email: result.email, username: result.email.split("@")[0].slice(0,20), admin: admin, moderator: moderator, approved: true)
+      result.user = User.create!(name: result.name, email: result.email, username: result.email.split("@")[0].slice(0,20), admin: admin, moderator: moderator)
+      result.user.approve
       log(">>>>>>>>> user created #{result.user.id}")
     end
 
