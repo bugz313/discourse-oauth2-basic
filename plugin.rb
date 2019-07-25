@@ -166,9 +166,11 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
     result.email_valid = result.email.present? && (user_details[:email_verified] || SiteSetting.oauth2_email_verified?)
     avatar_url = user_details[:avatar]
 
+    log(">>>>>>>>> getting current info")
     current_info = ::PluginStore.get("oauth2_basic", "oauth2_basic_user_#{user_details[:user_id]}")
-    
+    log(">>>>>>>>> got current info #{current_info}")
     if current_info
+      log(">>>>>>>>> current_info NOT null, getting user for update email #{user_details}")
       result.user = User.where(id: current_info[:user_id]).first
       result.user&.update!(email: result.email) if SiteSetting.oauth2_overrides_email && result.email
     elsif !current_info
