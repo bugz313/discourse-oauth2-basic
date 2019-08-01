@@ -242,10 +242,12 @@ CSS
 
 register_javascript <<JS
 
-  window.addEventListener('load', function(event) {
+  $(document).ready(function(event) {
     if (!Discourse.User.current() && Discourse.SiteSettings.oauth2_enabled) {
       $(".login-button").click(); 
       setTimeout(function(){
+        $(".modal-backdrop").css("display", "none");
+        $("#discourse-modal").css("display", "none");
         $(".btn-social.oauth2_basic").click();
       }, 0)
     }
