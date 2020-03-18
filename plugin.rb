@@ -130,6 +130,7 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
         json_walk(result, user_json, :email_verified)
         json_walk(result, user_json, :avatar)
         json_walk(result, user_json, :forum_group)
+        json_walk(result, user_json, :groups)
       end
       log(">>>>>>>>>>>> result from json walk: #{result}")
       result
@@ -186,7 +187,13 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
         moderator = true;
       end
       log(">>>>>>>>> creating user #{result.name}, #{result.email}, #{result.username}, #{admin}, #{moderator}")
-      result.user = User.create!(name: result.name, email: result.email, username: result.email.gsub("@", "_").gsub(".", "_").slice(0,60), admin: admin, moderator: moderator)
+      groups = []
+      if user_details[:groups].include? 'hm-employees'
+      groups = [{
+        id: 41
+      }]
+      end
+      result.user = User.create!(name: result.name, email: result.email, username: result.email.slice(0,60), admin: admin, moderator: moderator, groups: groups)
       result.user.update!(approved: true)
       result.user.update!(active: true)
       log(">>>>>>>>> user created #{result.user.id}")
