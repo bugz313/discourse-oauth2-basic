@@ -187,15 +187,15 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
         moderator = true;
       end
       log(">>>>>>>>> creating user #{result.name}, #{result.email}, #{result.username}, #{admin}, #{moderator}")
-      groups = []
-      if user_details[:groups].include? 'hm-employees'
-      groups = [{
-        id: 41
-      }]
+      if user_details[:groups].include? "hm-employees"
+        group = Group.lookup_group("hm-employees")
       end
-      result.user = User.create!(name: result.name, email: result.email, username: result.email.slice(0,60), admin: admin, moderator: moderator, groups: groups)
+      result.user = User.create!(name: result.name, email: result.email, username: result.email.slice(0,60), admin: admin, moderator: moderator)
       result.user.update!(approved: true)
       result.user.update!(active: true)
+      if group
+        group.add(result.user)
+      end
       log(">>>>>>>>> user created #{result.user.id}")
     end
 
