@@ -190,7 +190,7 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
       if user_details[:groups].include? "hm-employees"
         group = Group.lookup_group("hm-employees")
       end
-      result.user = User.create!(name: result.name, email: result.email, username: result.email.slice(0,60), admin: admin, moderator: moderator)
+      result.user = User.create!(name: result.name, email: result.email, username: result.email.gsub("@", "_").gsub(".", "_").slice(0,60), admin: admin, moderator: moderator)
       result.user.update!(approved: true)
       result.user.update!(active: true)
       if group
