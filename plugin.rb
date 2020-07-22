@@ -207,30 +207,30 @@ class OAuth2BasicAuthenticator < ::Auth::OAuth2Authenticator
         log(">>>>>>>>> start setting user oauth")
         ::PluginStore.set("oauth2_basic", "oauth2_basic_user_#{user_details[:user_id]}", user_id: result.user.id)
         log(">>>>>>>>> done setting user oauth")
-	    else
-		    log(">>>>>>>>> current_info null, creating user #{user_details}")
-		    admin = false
-		    moderator = false
-		    if user_details[:forum_group] == "forum-admin"
-			    log(">>>>>>>>> user admin")
-			    admin = true;
-		    end
-		    if user_details[:forum_group] == "forum-moderator"
-			    log(">>>>>>>>> user moderator")
-			    moderator = true;
-		    end
-		    log(">>>>>>>>> creating user #{result.name}, #{result.email}, #{result.username}, #{admin}, #{moderator}")
-		    if user_details[:groups].include? "hm-employees"
-			    group = Group.lookup_group("hm-employees")
-		    end
-		    result.user = User.create!(name: result.name, email: result.email, username: result.email.gsub("@", "_").gsub(".", "_").slice(0,60), admin: admin, moderator: moderator)
-		    result.user.update!(approved: true)
-		    result.user.update!(active: true)
-		    if group
-			    group.add(result.user)
-		    end
-		    ::PluginStore.set("oauth2_basic", "oauth2_basic_user_#{user_details[:user_id]}", user_id: result.user.id)
-		    log(">>>>>>>>> user created #{result.user.id}")
+	  else
+		log(">>>>>>>>> current_info null, creating user #{user_details}")
+		admin = false
+		moderator = false
+		if user_details[:forum_group] == "forum-admin"
+		  log(">>>>>>>>> user admin")
+		  admin = true;
+		end
+		if user_details[:forum_group] == "forum-moderator"
+		  log(">>>>>>>>> user moderator")
+		  moderator = true;
+		end
+		log(">>>>>>>>> creating user #{result.name}, #{result.email}, #{result.username}, #{admin}, #{moderator}")
+		if user_details[:groups].include? "hm-employees"
+		  group = Group.lookup_group("hm-employees")
+		end
+		result.user = User.create!(name: result.name, email: result.email, username: result.email.gsub("@", "_").gsub(".", "_").slice(0,60), admin: admin, moderator: moderator)
+		result.user.update!(approved: true)
+		result.user.update!(active: true)
+		if group
+		  group.add(result.user)
+		end
+		::PluginStore.set("oauth2_basic", "oauth2_basic_user_#{user_details[:user_id]}", user_id: result.user.id)
+		log(">>>>>>>>> user created #{result.user.id}")
       end
     end
 
